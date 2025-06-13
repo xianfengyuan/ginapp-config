@@ -11,6 +11,7 @@ image:
   tag: 5aa15c56b4750937c3436402819e94e6540ef2c9
 
 imagePullSecrets: []
+configPath: "/vault/secrets"
 nameOverride: ""
 fullnameOverride: ""
 
@@ -21,9 +22,18 @@ serviceAccount:
   annotations: {}
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
-  name: ""
+  name: "ginapp-sa"
 
-podAnnotations: {}
+podAnnotations:
+  vault.hashicorp.com/agent-inject: 'true'
+  vault.hashicorp.com/role: 'ginapp'
+  vault.hashicorp.com/agent-inject-secret-config.json: 'mongodb/data/database/config'
+  vault.hashicorp.com/agent-inject-template-config.json: |
+      {{- with secret "mongodb/data/database/config" -}}
+      {
+        "URI": "mongodb+srv://{{ .Data.data.username }}:{{ .Data.data.password }}@{{ .Data.data.host }}/?retryWrites=true&w=majority&appName={{ .Data.data.cluster }}"
+      }
+      {{- end -}}
 
 podSecurityContext: {}
   # fsGroup: 2000
@@ -38,7 +48,7 @@ securityContext: {}
 
 service:
   type: ClusterIP
-  port: 80
+  port: 8080
 
 ingress:
   enabled: false
