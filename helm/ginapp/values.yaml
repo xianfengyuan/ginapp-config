@@ -8,7 +8,7 @@ image:
   repository: xianfengyuan/ginapp
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: c85cac8627cf04aee02e1c4bf5bf7a95ce78a957
+  tag: 1b4107fc9cb310ca05170631b2f807d3bbdf35d1
 
 imagePullSecrets: []
 configPath: "/vault/secrets"
